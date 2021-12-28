@@ -19,7 +19,7 @@
     "email": "vladivanov.dev@gmail.com",
     "url": "https://yungvldai.ru"
   },
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:yungvldai/reshala.git"
