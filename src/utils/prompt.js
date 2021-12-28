@@ -4,11 +4,7 @@ import chalk from 'chalk';
 import { isPrimitive } from './is.js';
 
 export const ab = async (params) => {
-  const { message, skip = false } = params;
-
-  if (skip) {
-    return params.a;
-  }
+  const { message } = params;
 
   console.log(chalk.magenta('a:'), params.a);
   console.log(chalk.cyan('b:'), chalk.gray(params.b || 'nothing'));

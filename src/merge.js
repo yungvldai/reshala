@@ -7,6 +7,13 @@ import { ab } from './utils/prompt.js';
 
 const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   if (valueB === undefined && valueA) {
+    if (mergeOptions.include) {
+      return {
+        has: true,
+        choice: valueA
+      };
+    }
+
     console.log(
       `Key ${chalk.blue(
         prefix + key
@@ -15,8 +22,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     const choice = await ab({
       message: `${key}:`,
-      a: valueA,
-      skip: mergeOptions.include
+      a: valueA
     });
 
     return {
@@ -26,6 +32,13 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   }
 
   if (valueA === undefined && valueB) {
+    if (mergeOptions.include) {
+      return {
+        has: true,
+        choice: valueB
+      };
+    }
+
     console.log(
       `Key ${chalk.blue(
         prefix + key
@@ -34,8 +47,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     const choice = await ab({
       message: `${key}:`,
-      a: valueB,
-      skip: mergeOptions.include
+      a: valueB
     });
 
     return {
