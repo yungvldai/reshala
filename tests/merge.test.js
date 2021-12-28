@@ -162,7 +162,7 @@ describe('merge', () => {
       }
     };    
 
-    const merged = await merge(packageA, packageB, { include: true });
+    const merged = await merge(packageA, packageB, { includeAll: true });
 
     expect(merged).toEqual(result);
   })
