@@ -41,9 +41,12 @@ const run = async () => {
         includeAll
       };
 
-      const gitRoot = await getRoot();
-
-      if (!gitRoot) {
+      let gitRoot; 
+      
+      try {
+        gitRoot = await getRoot();
+      } catch (error) {
+        logger.debug(error);
         logger.err('Cannot get git root.');
         process.exit(1);
       }

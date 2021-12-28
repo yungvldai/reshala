@@ -3,7 +3,9 @@ import path from 'path';
 import logger from './logger.js';
 import exec from './utils/exec.js';
 
-const pwd = process.cwd();
+export const getRoot = async () => {
+  return (await exec('git rev-parse --show-toplevel')).trim();
+};
 
 export const getOursVersion = async (file) => {
   const branch = await exec('git branch --show-current');
@@ -11,7 +13,8 @@ export const getOursVersion = async (file) => {
 };
 
 export const getTheirsVersion = async (file) => {
-  const mergeHeadPath = path.resolve(pwd, '.git', 'MERGE_HEAD');
+  const gitRoot = await getRoot();
+  const mergeHeadPath = path.resolve(gitRoot, '.git', 'MERGE_HEAD');
   const mergeHead = await fs.readFile(mergeHeadPath, 'utf-8');
   return exec(`git show ${mergeHead.trim()}:${file.trim()}`);
 };
@@ -23,14 +26,5 @@ export const getConflictedFiles = async () => {
   } catch (error) {
     logger.debug(error);
     return [];
-  }
-};
-
-export const getRoot = async () => {
-  try {
-    return (await exec('git rev-parse --show-toplevel')).trim();
-  } catch (error) {
-    logger.debug(error);
-    return null;
   }
 };
