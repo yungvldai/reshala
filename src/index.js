@@ -52,9 +52,9 @@ const run = async () => {
           const theirs = JSON.parse(await getTheirsVersion(pkg));
 
           const merged = await merge(ours, theirs, mergeOptions);
-          const json = JSON.stringify(merged, null, 2);
+          const jsonString = JSON.stringify(merged, null, 2);
 
-          await fs.writeFile(path.resolve(gitRoot, pkg), json);
+          await fs.writeFile(path.resolve(gitRoot, pkg), jsonString);
 
           console.log(chalk.green('OK!'));
         } catch (error) {

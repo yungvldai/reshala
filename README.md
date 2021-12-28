@@ -8,6 +8,8 @@ A simple CLI tool to resolve `package.json` merge conflicts.
 Also, `reshala` automatically determines version of any dependency and resolves the newer one.
 If there will any problems, `reshala` will ask you what to do.
 
+Special thanks to [my colleague](https://github.com/IvanAbramow) for giving a name for this tool 🤙.
+
 ## Installing
 ```
 $ npm i -g reshala
