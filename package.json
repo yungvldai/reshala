@@ -1,0 +1,44 @@
+{
+  "name": "reshala",
+  "version": "1.0.0",
+  "description": "Tool for more easily merging of package.json files",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "reshala": "./bin/reshala.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "format": "prettier --write src/"
+  },
+  "author": {
+    "name": "Vladislav Ivanov",
+    "email": "vladivanov.dev@gmail.com",
+    "url": "https://yungvldai.ru"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yungvldai/reshala.git"
+  },
+  "dependencies": {
+    "chalk": "4.1.0",
+    "commander": "8.3.0",
+    "inquirer": "8.2.0"
+  },
+  "engines": {
+    "node": ">= 13"
+  },
+  "devDependencies": {
+    "jest": "27.4.5",
+    "prettier": "2.5.1"
+  },
+  "keywords": [
+    "reshala",
+    "git",
+    "package",
+    "conflict",
+    "resolve",
+    "lerna"
+  ]
+}
