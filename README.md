@@ -4,7 +4,7 @@
 [![Tests](https://github.com/yungvldai/reshala/actions/workflows/main.yml/badge.svg)](https://github.com/yungvldai/reshala/actions/workflows/main.yml)
 
 A simple CLI tool to resolve `package.json` merge conflicts.
-`reshala` automatically finds all your conflicted `package.json` files.
+`reshala` automatically finds all of your conflicted `package.json` files.
 Also, `reshala` automatically determines version of any dependency and resolves the newer one.
 If there will any problems, `reshala` will ask you what to do.
 
