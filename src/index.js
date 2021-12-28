@@ -7,6 +7,7 @@ import { Command } from 'commander/esm.mjs';
 import { getOursVersion, getRoot, getTheirsVersion } from './git.js';
 import merge from './merge.js';
 import getPackages from './packages.js';
+import logger from './logger.js';
 
 const run = async () => {
   const __filename = fileURLToPath(import.meta.url);
@@ -19,33 +20,45 @@ const run = async () => {
     const reshalaPackage = JSON.parse(await fs.readFile(reshalaPackagePath, 'utf-8'));
     version = reshalaPackage.version;
   } catch (error) {
-    console.log('Something went wrong. Please, reinstall package using `npm i -g reshala`.');
+    logger.err('Something went wrong. Please, reinstall package using `npm i -g reshala`.');
     process.exit(1);
   }
 
   const program = new Command();
 
   program
-    .option('-i, --include', 'include all conflicted lines')
+    .option('-i, --include-all', 'include all conflicted lines')
+    .option('-d, --debug', 'run in debug mode')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
-      const { include = false } = options;
+      const { includeAll = false, debug = false } = options;
+
+      if (debug) {
+        global.__isDebug = true;
+      }
 
       const mergeOptions = {
-        include
+        includeAll
       };
 
       const gitRoot = await getRoot();
 
       if (!gitRoot) {
-        console.log('Cannot get git root.');
+        logger.err('Cannot get git root.');
         process.exit(1);
       }
 
       const packages = await getPackages();
 
+      if (packages.length < 1) {
+        logger.log('No conflicted `package.json` files.');
+        process.exit(0);
+      }
+
+      logger.log(`${chalk.yellow(packages.length)} conflicted packages.`);
+
       for (const pkg of packages) {
-        console.log(chalk.yellow(pkg));
+        logger.log(chalk.blue(pkg));
 
         try {
           const ours = JSON.parse(await getOursVersion(pkg));
@@ -56,11 +69,14 @@ const run = async () => {
 
           await fs.writeFile(path.resolve(gitRoot, pkg), jsonString);
 
-          console.log(chalk.green('OK!'));
+          logger.log(chalk.green('OK!'));
         } catch (error) {
-          console.log('Skipped.');
+          logger.debug(error);
+          logger.log(chalk.yellow('Skipped.'));
         }
       }
+
+      logger.log('🤝 Thank you for using `reshala`. Have a nice day!');
     });
 
   program.parse(process.argv);

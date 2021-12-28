@@ -4,17 +4,18 @@ import { areEqual, isArray, isObject, what } from './utils/is.js';
 import semver from './utils/semver.js';
 import allKeys from './utils/allKeys.js';
 import { ab } from './utils/prompt.js';
+import logger from './logger.js';
 
 const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   if (valueB === undefined && valueA) {
-    if (mergeOptions.include) {
+    if (mergeOptions.includeAll) {
       return {
         has: true,
         choice: valueA
       };
     }
 
-    console.log(
+    logger.log(
       `Key ${chalk.blue(
         prefix + key
       )} included in ours, but not included in theirs. What to include?`
@@ -32,14 +33,14 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   }
 
   if (valueA === undefined && valueB) {
-    if (mergeOptions.include) {
+    if (mergeOptions.includeAll) {
       return {
         has: true,
         choice: valueB
       };
     }
 
-    console.log(
+    logger.log(
       `Key ${chalk.blue(
         prefix + key
       )} included in theirs, but not included in ours. What to include?`
@@ -72,11 +73,11 @@ const resolveVersion = async (pkg, versionA, versionB) => {
   }
 
   if (pkg === 'root') {
-    console.log(
+    logger.log(
       'The package version in ours is different from the package version in theirs. And it cannot be parsed.'
     );
   } else {
-    console.log(
+    logger.log(
       `The ${chalk.blue(pkg)} version in ours is different from the ${chalk.blue(
         pkg
       )} version in theirs. And it cannot be parsed.`
@@ -162,7 +163,7 @@ const merge = async (a, b, mergeOptions, prefix = '') => {
     }
 
     if (what(valueA) !== what(valueB) || isArray(valueA)) {
-      console.log(`Keys ${chalk.blue(prefix + key)} in ours and theirs don\`t match.`);
+      logger.log(`Keys ${chalk.blue(prefix + key)} in ours and theirs don\`t match.`);
 
       const choice = await ab({
         message: `${prefix}${key}:`,

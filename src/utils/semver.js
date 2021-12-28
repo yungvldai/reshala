@@ -48,7 +48,7 @@ const parse = (string) => {
 
 const prepare = (string) => {
   return string.replace(/[~^]/g, '');
-}
+};
 
 export default {
   parse,
