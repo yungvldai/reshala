@@ -6,3 +6,4 @@ jest.config.js
 tests/
 .prettierignore
 .prettierrc
+.husky/

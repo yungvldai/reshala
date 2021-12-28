@@ -29,9 +29,7 @@ const run = async () => {
     .option('-i, --include', 'include all conflicted lines')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
-      const {
-        include = false
-      } = options;
+      const { include = false } = options;
 
       const mergeOptions = {
         include

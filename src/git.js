@@ -31,7 +31,7 @@ export const getConflictedFiles = async () => {
   } catch (error) {
     return [];
   }
-}
+};
 
 export const getRoot = async () => {
   try {
@@ -39,4 +39,4 @@ export const getRoot = async () => {
   } catch (error) {
     return null;
   }
-}
+};

@@ -8,8 +8,11 @@
     "reshala": "./bin/reshala.js"
   },
   "scripts": {
+    "prepare": "husky install",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "pre-commit": "npm run format",
+    "pre-push": "npm test"
   },
   "author": {
     "name": "Vladislav Ivanov",
@@ -30,6 +33,7 @@
     "node": ">= 13"
   },
   "devDependencies": {
+    "husky": "7.0.4",
     "jest": "27.4.5",
     "prettier": "2.5.1"
   },

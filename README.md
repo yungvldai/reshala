@@ -18,4 +18,4 @@ $ reshala
 
 * `-h, --help` - print short reference
 * `-v, --version` - print version of package
-* `-i, --include` - by default, `reshala` will ask you if key exists in ours/theirs but not in the other. You can specify this option to include all keys.
+* `-i, --include` - by default, `reshala` will ask you if key exists in ours/theirs but not in the other. You can specify this option to include all keys without prompt.
