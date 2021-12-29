@@ -41,8 +41,8 @@ const run = async () => {
         includeAll
       };
 
-      let gitRoot; 
-      
+      let gitRoot;
+
       try {
         gitRoot = await getRoot();
       } catch (error) {
