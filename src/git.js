@@ -9,6 +9,12 @@ export const getRoot = async () => {
 
 export const getOursVersion = async (file) => {
   const branch = await exec('git branch --show-current');
+
+  if (!branch) {
+    // e.g. detached HEAD
+    throw new Error('detached HEAD');
+  }
+
   return exec(`git show ${branch.trim()}:${file.trim()}`);
 };
 
