@@ -8,21 +8,21 @@ export const getRoot = async () => {
 };
 
 export const getOursVersion = async (file) => {
-  const branch = await exec('git branch --show-current');
+  const branch = (await exec('git branch --show-current')).trim();
 
   if (!branch) {
     // e.g. detached HEAD
     throw new Error('detached HEAD');
   }
 
-  return exec(`git show ${branch.trim()}:${file.trim()}`);
+  return exec(`git show ${branch}:${file}`);
 };
 
 export const getTheirsVersion = async (file) => {
   const gitRoot = await getRoot();
   const mergeHeadPath = path.resolve(gitRoot, '.git', 'MERGE_HEAD');
-  const mergeHead = await fs.readFile(mergeHeadPath, 'utf-8');
-  return exec(`git show ${mergeHead.trim()}:${file.trim()}`);
+  const mergeHead = (await fs.readFile(mergeHeadPath, 'utf-8')).trim();
+  return exec(`git show ${mergeHead}:${file}`);
 };
 
 export const getConflictedFiles = async () => {

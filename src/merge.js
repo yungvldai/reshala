@@ -60,7 +60,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   return { has: false };
 };
 
-const resolveVersion = async (pkg, versionA, versionB) => {
+const resolveVersion = async (pkg, versionA, versionB, depType = '') => {
   const parsedA = semver.parse(semver.prepare(versionA));
   const parsedB = semver.parse(semver.prepare(versionB));
 
@@ -72,29 +72,39 @@ const resolveVersion = async (pkg, versionA, versionB) => {
     }
   }
 
-  if (pkg === 'root') {
+  if (pkg === null) {
     logger.log(
       'The package version in ours is different from the package version in theirs. And it cannot be parsed.'
     );
+
+    const choice = await ab({
+      message: 'version:',
+      a: versionA,
+      b: versionB
+    });
+
+    return choice;
   } else {
     logger.log(
       `The ${chalk.blue(pkg)} version in ours is different from the ${chalk.blue(
         pkg
       )} version in theirs. And it cannot be parsed.`
     );
+
+    const choice = await ab({
+      message: `version of ${depType}${depType ? ' dependency' : 'dependency'}:`,
+      a: versionA,
+      b: versionB
+    });
+
+    return choice;
   }
-
-  const choice = await ab({
-    message: pkg === 'root' ? 'version:' : `version of ${pkg}:`,
-    a: versionA,
-    b: versionB
-  });
-
-  return choice;
 };
 
 const mergeDeps = async (key, a, b, mergeOptions) => {
   const result = {};
+
+  const [, depType] = /(.*)[Dd]{1}ependencies/.exec(key);
 
   for (const dep of allKeys(a, b)) {
     const valueA = a[dep];
@@ -117,7 +127,7 @@ const mergeDeps = async (key, a, b, mergeOptions) => {
       continue;
     }
 
-    result[dep] = await resolveVersion(dep, valueA, valueB);
+    result[dep] = await resolveVersion(dep, valueA, valueB, depType);
   }
 
   return result;
@@ -148,7 +158,7 @@ const merge = async (a, b, mergeOptions, prefix = '') => {
     }
 
     if (key === 'version' && !prefix) {
-      result[key] = await resolveVersion('root', valueA, valueB);
+      result[key] = await resolveVersion(null, valueA, valueB);
 
       continue;
     }
