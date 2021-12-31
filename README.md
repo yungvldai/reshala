@@ -10,6 +10,12 @@ If there will any problems, `reshala` will ask you what to do.
 
 Special thanks to [my colleague](https://github.com/IvanAbramow) for giving a name for this tool 🤙.
 
+
+![meme](https://github.com/yungvldai/reshala/blob/master/media/meme.png?raw=true)
+
+## Changelog
+[CHANGELOG.md](https://github.com/yungvldai/reshala/blob/master/CHANGELOG.md)
+
 ## Installing
 ```
 $ npm i -g reshala
