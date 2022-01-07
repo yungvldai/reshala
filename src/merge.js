@@ -60,7 +60,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   return { has: false };
 };
 
-const resolveVersion = async (pkg, versionA, versionB, depType = '') => {
+const resolveVersion = async (pkg, versionA, versionB, depType = 'common') => {
   const parsedA = semver.parse(semver.prepare(versionA));
   const parsedB = semver.parse(semver.prepare(versionB));
 
@@ -74,11 +74,11 @@ const resolveVersion = async (pkg, versionA, versionB, depType = '') => {
 
   if (pkg === null) {
     logger.log(
-      'The package version in ours is different from the package version in theirs. And it cannot be parsed.'
+      'The package version in ours is different from the version in theirs and it cannot be parsed.'
     );
 
     const choice = await ab({
-      message: 'version:',
+      message: 'package version:',
       a: versionA,
       b: versionB
     });
@@ -86,13 +86,11 @@ const resolveVersion = async (pkg, versionA, versionB, depType = '') => {
     return choice;
   } else {
     logger.log(
-      `The ${chalk.blue(pkg)} version in ours is different from the ${chalk.blue(
-        pkg
-      )} version in theirs. And it cannot be parsed.`
+      `The ${chalk.blue(pkg)} (${depType} dependency) version in ours is different from the version in theirs and it cannot be parsed.`
     );
 
     const choice = await ab({
-      message: `version of ${depType}${depType ? ' dependency' : 'dependency'}:`,
+      message: `version of ${chalk.blue(pkg)} (${depType} dependency):`,
       a: versionA,
       b: versionB
     });
@@ -103,8 +101,13 @@ const resolveVersion = async (pkg, versionA, versionB, depType = '') => {
 
 const mergeDeps = async (key, a, b, mergeOptions) => {
   const result = {};
+  let depType;
 
-  const [, depType] = /(.*)[Dd]{1}ependencies/.exec(key);
+  const match = /(.*)[Dd]{1}ependencies/.exec(key);
+
+  if (match) {
+    [, depType] = match;
+  }
 
   for (const dep of allKeys(a, b)) {
     const valueA = a[dep];

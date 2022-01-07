@@ -72,7 +72,7 @@ const run = async () => {
 
           await fs.writeFile(path.resolve(gitRoot, pkg), jsonString);
 
-          logger.log(chalk.green('OK!'));
+          logger.log(chalk.green('Merged.'));
         } catch (error) {
           logger.debug(error);
           logger.log(chalk.yellow('Skipped.'));
