@@ -31,4 +31,4 @@ $ reshala
 * `-h, --help` - print short reference
 * `-d, --debug` - run in debug mode (additional output)
 * `-v, --version` - print version of package
-* `-i, --include-all` - by default, `reshala` will ask you if key exists in ours/theirs but not in the other. You can specify this option to include all keys without prompt.
+* `-i, --include-all` - by default, `reshala` will ask you what to do in cases when key exists in ours/theirs but not in the other. You can specify this option to include all keys without question.

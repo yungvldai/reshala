@@ -86,7 +86,9 @@ const resolveVersion = async (pkg, versionA, versionB, depType = 'common') => {
     return choice;
   } else {
     logger.log(
-      `The ${chalk.blue(pkg)} (${depType} dependency) version in ours is different from the version in theirs and it cannot be parsed.`
+      `The ${chalk.blue(
+        pkg
+      )} (${depType} dependency) version in ours is different from the version in theirs and it cannot be parsed.`
     );
 
     const choice = await ab({
