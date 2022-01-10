@@ -15,9 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - new tests
 - `-e, --exclude-all` option
 
-### Changed
-- bug: saving "nothing" instead of deleting. fixed.
-
 ## [2.0.0]
 ### Changed
 - bug: saving "nothing" instead of deleting. fixed.
