@@ -1,6 +1,6 @@
 {
   "name": "reshala",
-  "version": "1.1.5",
+  "version": "2.0.0",
   "description": "Tool for more easily merging of package.json files",
   "main": "index.js",
   "type": "module",

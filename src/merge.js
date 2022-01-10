@@ -18,7 +18,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
     logger.log(
       `Key ${chalk.blue(
         prefix + key
-      )} included in ours, but not included in theirs. What to include?`
+      )} included in ours, but not included in theirs. Include?`
     );
 
     const choice = await ab({
@@ -28,7 +28,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     return {
       has: true,
-      choice: choice === 'nothing' ? null : choice
+      choice: choice ? null : valueA
     };
   }
 
@@ -43,7 +43,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
     logger.log(
       `Key ${chalk.blue(
         prefix + key
-      )} included in theirs, but not included in ours. What to include?`
+      )} included in theirs, but not included in ours. Include?`
     );
 
     const choice = await ab({
@@ -53,7 +53,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     return {
       has: true,
-      choice: choice === 'nothing' ? null : choice
+      choice: choice ? null : valueB
     };
   }
 
@@ -115,7 +115,7 @@ const mergeDeps = async (key, a, b, mergeOptions) => {
     const valueA = a[dep];
     const valueB = b[dep];
 
-    const { has, ...excluded } = await checkExcluded(dep, valueA, valueB, mergeOptions, key);
+    const { has, ...excluded } = await checkExcluded(dep, valueA, valueB, mergeOptions, `${key}.`);
 
     if (has) {
       const { choice } = excluded;
