@@ -34,15 +34,15 @@ const run = async () => {
         `Update available ${chalk.red(version)} → ${chalk.green(result.latest)}. Please, update.`
       );
     }
-  } catch (err) {
+  } catch (error) {
     // do nothing
   }
 
   const program = new Command();
 
   program
-    .option('-i, --include-all', 'include all conflicted lines')
-    .option('-e, --exclude-all', 'exclude all conflicted lines')
+    .option('-i, --include-all', 'include all lines that are in ours/theirs but not in the other')
+    .option('-e, --exclude-all', 'exclude all lines that are in ours/theirs but not in the other')
     .option('-d, --debug', 'run in debug mode')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
