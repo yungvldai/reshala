@@ -15,10 +15,15 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
+    if (mergeOptions.excludeAll) {
+      return {
+        has: true,
+        choice: null
+      };
+    }
+
     logger.log(
-      `Key ${chalk.blue(
-        prefix + key
-      )} included in ours, but not included in theirs. Include?`
+      `Key ${chalk.blue(prefix + key)} included in ours, but not included in theirs. Include?`
     );
 
     const choice = await ab({
@@ -40,10 +45,15 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
+    if (mergeOptions.excludeAll) {
+      return {
+        has: true,
+        choice: null
+      };
+    }
+
     logger.log(
-      `Key ${chalk.blue(
-        prefix + key
-      )} included in theirs, but not included in ours. Include?`
+      `Key ${chalk.blue(prefix + key)} included in theirs, but not included in ours. Include?`
     );
 
     const choice = await ab({
@@ -138,7 +148,7 @@ const mergeDeps = async (key, a, b, mergeOptions) => {
   return result;
 };
 
-const merge = async (a, b, mergeOptions, prefix = '') => {
+const merge = async (a, b, mergeOptions = {}, prefix = '') => {
   let result = {};
 
   for (const key of allKeys(a, b)) {

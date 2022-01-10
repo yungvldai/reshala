@@ -1,7 +1,7 @@
 {
   "name": "reshala",
-  "version": "2.0.0",
-  "description": "Tool for more easily merging of package.json files",
+  "version": "2.1.0",
+  "description": "A simple CLI tool to resolve package.json merge conflicts.",
   "main": "index.js",
   "type": "module",
   "bin": {
@@ -11,7 +11,7 @@
     "prepare": "husky install",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "format": "prettier --write src/",
-    "pre-commit": "npm run format",
+    "pre-commit": "npm run format && git add .",
     "pre-push": "npm test"
   },
   "author": {
@@ -27,7 +27,8 @@
   "dependencies": {
     "chalk": "4.1.0",
     "commander": "8.3.0",
-    "inquirer": "8.2.0"
+    "inquirer": "8.2.0",
+    "update-check": "1.5.4"
   },
   "engines": {
     "node": ">= 13"
@@ -41,6 +42,7 @@
     "reshala",
     "git",
     "package",
+    "merge",
     "conflict",
     "resolve",
     "lerna"

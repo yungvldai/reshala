@@ -32,3 +32,6 @@ $ reshala
 * `-d, --debug` - run in debug mode (additional output)
 * `-v, --version` - print version of package
 * `-i, --include-all` - by default, `reshala` will ask you what to do in cases when key exists in ours/theirs but not in the other. You can specify this option to include all keys without question.
+* `-e, --exclude-all` - opposite of previous
+
+If options `-i, --include-all` and `-e, --exclude-all` are used both an error will be generated.

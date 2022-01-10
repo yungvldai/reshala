@@ -63,6 +63,62 @@ describe('merge', () => {
     });
   });
 
+  it('include all', async () => {
+    const packageA = {
+      name: 'test-package',
+      version: '1.2.0',
+      dependencies: {
+        react: '16.0.3',
+      }
+    };
+
+    const packageB = {
+      name: 'test-package',
+      dependencies: {
+        react: '17.0.2',
+        redux: '6.2.4'
+      }
+    };
+
+    const merged = await merge(packageA, packageB, { includeAll: true });
+
+    expect(merged).toEqual({
+      name: 'test-package',
+      version: '1.2.0',
+      dependencies: {
+        react: '17.0.2',
+        redux: '6.2.4'
+      }
+    });
+  });
+
+  it('exclude all', async () => {
+    const packageA = {
+      name: 'test-package',
+      version: '1.2.0',
+      dependencies: {
+        react: '16.0.3',
+      }
+    };
+
+    const packageB = {
+      name: 'test-package',
+      dependencies: {
+        react: '17.0.2',
+        redux: '6.2.4'
+      }
+    };
+
+    const merged = await merge(packageA, packageB, { excludeAll: true });
+
+    expect(merged).toEqual({
+      name: 'test-package',
+      dependencies: {
+        react: '17.0.2',
+      }
+    });
+  });
+
   it('real package', async () => {
     const packageA = {
       "name": "reshala",

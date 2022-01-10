@@ -3,6 +3,7 @@ import path, { dirname } from 'path';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 import { Command } from 'commander/esm.mjs';
+import checkForUpdate from 'update-check';
 
 import { getOursVersion, getRoot, getTheirsVersion } from './git.js';
 import merge from './merge.js';
@@ -14,34 +15,54 @@ const run = async () => {
   const __dirname = dirname(__filename);
   const reshalaPackagePath = path.resolve(__dirname, '../package.json');
 
-  let version;
+  let pkg;
 
   try {
-    const reshalaPackage = JSON.parse(await fs.readFile(reshalaPackagePath, 'utf-8'));
-    version = reshalaPackage.version;
+    pkg = JSON.parse(await fs.readFile(reshalaPackagePath, 'utf-8'));
   } catch (error) {
     logger.err('Something went wrong. Please, reinstall package using `npm i -g reshala`.');
     process.exit(1);
+  }
+
+  const version = pkg.version;
+
+  try {
+    const result = await checkForUpdate(pkg);
+
+    if (result) {
+      logger.log(
+        `Update available ${chalk.red(version)} → ${chalk.green(result.latest)}. Please, update.`
+      );
+    }
+  } catch (err) {
+    // do nothing
   }
 
   const program = new Command();
 
   program
     .option('-i, --include-all', 'include all conflicted lines')
+    .option('-e, --exclude-all', 'exclude all conflicted lines')
     .option('-d, --debug', 'run in debug mode')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
-      const { includeAll = false, debug = false } = options;
+      const { includeAll = false, excludeAll = false, debug = false } = options;
 
       if (debug) {
         global.__isDebug = true;
       }
 
       const mergeOptions = {
-        includeAll
+        includeAll,
+        excludeAll
       };
 
       let gitRoot;
+
+      if (includeAll && excludeAll) {
+        logger.err('Please, choose one.');
+        process.exit(1);
+      }
 
       try {
         gitRoot = await getRoot();
