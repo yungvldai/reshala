@@ -33,7 +33,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     return {
       has: true,
-      choice: choice ? null : valueA
+      choice: choice ? valueA : null
     };
   }
 
@@ -63,7 +63,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 
     return {
       has: true,
-      choice: choice ? null : valueB
+      choice: choice ? valueB : null
     };
   }
 
