@@ -22,12 +22,10 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
-    logger.log(
-      `Key ${chalk.blue(prefix + key)} included in ours, but not included in theirs. Include?`
-    );
+    logger.log(`Key ${chalk.magenta(prefix + key)} included in ours, but not included in theirs.`);
 
     const choice = await ab({
-      message: `${key}:`,
+      message: `Include key ${chalk.magenta(prefix + key)}?`,
       a: valueA
     });
 
@@ -52,12 +50,10 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
-    logger.log(
-      `Key ${chalk.blue(prefix + key)} included in theirs, but not included in ours. Include?`
-    );
+    logger.log(`Key ${chalk.magenta(prefix + key)} included in theirs, but not included in ours.`);
 
     const choice = await ab({
-      message: `${key}:`,
+      message: `Include ${chalk.magenta(prefix + key)}?`,
       a: valueB
     });
 
@@ -70,7 +66,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
   return { has: false };
 };
 
-const resolveVersion = async (pkg, versionA, versionB, depType = 'common') => {
+const resolveVersion = async (pkg, versionA, versionB, depType) => {
   const parsedA = semver.parse(semver.prepare(versionA));
   const parsedB = semver.parse(semver.prepare(versionB));
 
@@ -96,13 +92,13 @@ const resolveVersion = async (pkg, versionA, versionB, depType = 'common') => {
     return choice;
   } else {
     logger.log(
-      `The ${chalk.blue(
-        pkg
-      )} (${depType} dependency) version in ours is different from the version in theirs and it cannot be parsed.`
+      `The ${chalk.magenta(pkg)} (${
+        depType || 'common'
+      } dependency) version in ours is different from the version in theirs and it cannot be parsed.`
     );
 
     const choice = await ab({
-      message: `version of ${chalk.blue(pkg)} (${depType} dependency):`,
+      message: `Choose version of ${chalk.magenta(pkg)} (${depType || 'common'} dependency):`,
       a: versionA,
       b: versionB
     });
@@ -188,10 +184,10 @@ const merge = async (a, b, mergeOptions = {}, prefix = '') => {
     }
 
     if (what(valueA) !== what(valueB) || isArray(valueA)) {
-      logger.log(`Keys ${chalk.blue(prefix + key)} in ours and theirs don\`t match.`);
+      logger.log(`Keys ${chalk.magenta(prefix + key)} in ours and theirs don\`t match.`);
 
       const choice = await ab({
-        message: `${prefix}${key}:`,
+        message: `Choose value of key ${chalk.magenta(prefix + key)}:`,
         a: valueA,
         b: valueB
       });
@@ -210,7 +206,7 @@ const merge = async (a, b, mergeOptions = {}, prefix = '') => {
     }
 
     const choice = await ab({
-      message: `${prefix}${key}:`,
+      message: `Choose value of key ${chalk.magenta(prefix + key)}:`,
       a: valueA,
       b: valueB
     });
