@@ -8,8 +8,8 @@ export const ab = async (params) => {
   const { message, a, b } = params;
 
   if (a && b) {
-    logger.log(chalk.magenta('a:'), a);
-    logger.log(chalk.cyan('b:'), b);
+    logger.info(chalk.magenta('a:'), a);
+    logger.info(chalk.cyan('b:'), b);
   }
 
   try {

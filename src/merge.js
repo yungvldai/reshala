@@ -22,7 +22,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
-    logger.log(`Key ${chalk.magenta(prefix + key)} included in ours, but not included in theirs.`);
+    logger.info(`Key ${chalk.magenta(prefix + key)} included in ours, but not included in theirs.`);
 
     const choice = await ab({
       message: `Include key ${chalk.magenta(prefix + key)}?`,
@@ -50,7 +50,7 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
       };
     }
 
-    logger.log(`Key ${chalk.magenta(prefix + key)} included in theirs, but not included in ours.`);
+    logger.info(`Key ${chalk.magenta(prefix + key)} included in theirs, but not included in ours.`);
 
     const choice = await ab({
       message: `Include ${chalk.magenta(prefix + key)}?`,
@@ -79,7 +79,7 @@ const resolveVersion = async (pkg, versionA, versionB, depType) => {
   }
 
   if (pkg === null) {
-    logger.log(
+    logger.info(
       'The package version in ours is different from the version in theirs and it cannot be parsed.'
     );
 
@@ -91,7 +91,7 @@ const resolveVersion = async (pkg, versionA, versionB, depType) => {
 
     return choice;
   } else {
-    logger.log(
+    logger.info(
       `The ${chalk.magenta(pkg)} (${
         depType || 'common'
       } dependency) version in ours is different from the version in theirs and it cannot be parsed.`
@@ -151,6 +151,25 @@ const merge = async (a, b, mergeOptions = {}, prefix = '') => {
     const valueA = a[key];
     const valueB = b[key];
 
+    if (mergeOptions.preMerge) {
+      try {
+        const preMergeResult = mergeOptions.preMerge(key, valueA, valueB);
+
+        if (preMergeResult) {
+          result = {
+            ...result,
+            ...preMergeResult
+          };
+
+          continue;
+        }
+      } catch (error) {
+        logger.debug(error);
+        logger.err('An error occurred while running the driver. Please, check its source code.');
+        process.exit(1);
+      }
+    }
+
     const { has, ...excluded } = await checkExcluded(key, valueA, valueB, mergeOptions, prefix);
 
     if (has) {
@@ -184,7 +203,7 @@ const merge = async (a, b, mergeOptions = {}, prefix = '') => {
     }
 
     if (what(valueA) !== what(valueB) || isArray(valueA)) {
-      logger.log(`Keys ${chalk.magenta(prefix + key)} in ours and theirs don\`t match.`);
+      logger.info(`Keys ${chalk.magenta(prefix + key)} in ours and theirs don\`t match.`);
 
       const choice = await ab({
         message: `Choose value of key ${chalk.magenta(prefix + key)}:`,

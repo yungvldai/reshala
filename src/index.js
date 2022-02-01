@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import path, { dirname } from 'path';
+import vm from 'vm';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 import { Command } from 'commander/esm.mjs';
@@ -9,6 +10,16 @@ import { getOursVersion, getRoot, getTheirsVersion } from './git.js';
 import merge from './merge.js';
 import getPackages from './packages.js';
 import logger from './logger.js';
+import ab from './utils/prompt';
+
+const driverContext = {
+  require,
+  logger,
+  chalk,
+  ab
+};
+
+const pwd = process.cwd();
 
 const run = async () => {
   const __filename = fileURLToPath(import.meta.url);
@@ -30,7 +41,7 @@ const run = async () => {
     const result = await checkForUpdate(pkg);
 
     if (result) {
-      logger.log(
+      logger.info(
         `Update available ${chalk.red(version)} → ${chalk.green(result.latest)}. Please, update.`
       );
     }
@@ -43,18 +54,43 @@ const run = async () => {
   program
     .option('-i, --include-all', 'include all lines that are in ours/theirs but not in the other')
     .option('-e, --exclude-all', 'exclude all lines that are in ours/theirs but not in the other')
+    .option('-d, --driver', 'use custom driver to merge files')
     .option('-d, --debug', 'run in debug mode')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
-      const { includeAll = false, excludeAll = false, debug = false } = options;
+      const { includeAll = false, excludeAll = false, debug = false, driver } = options;
 
       if (debug) {
         global.__isDebug = true;
       }
 
+      let preMerge = null;
+
+      if (driver) {
+        try {
+          const driverFullPath = path.resolve(pwd, driver);
+          preMerge = vm.runInNewContext(await fs.readFile(driverFullPath, 'utf-8'), driverContext);
+        } catch (error) {
+          logger.debug(error);
+          logger.err('Cannot read or compile driver.');
+          process.exit(1);
+        }
+
+        if (typeof preMerge !== 'function') {
+          logger.err('Driver must be a function!');
+          process.exit(1);
+        }
+
+        if (preMerge.length > 3) {
+          logger.err('Driver takes at most 3 arguments!');
+          process.exit(1);
+        }
+      }
+
       const mergeOptions = {
         includeAll,
-        excludeAll
+        excludeAll,
+        preMerge
       };
 
       let gitRoot;
@@ -75,14 +111,14 @@ const run = async () => {
       const packages = await getPackages();
 
       if (packages.length < 1) {
-        logger.log('No conflicted `package.json` files.');
+        logger.info('No conflicted `package.json` files.');
         process.exit(0);
       }
 
-      logger.log(`${chalk.yellow(packages.length)} conflicted packages.`);
+      logger.info(`${chalk.yellow(packages.length)} conflicted packages.`);
 
       for (const pkg of packages) {
-        logger.log(chalk.blue(pkg));
+        logger.info(chalk.blue(pkg));
 
         try {
           const ours = JSON.parse(await getOursVersion(pkg));
@@ -93,14 +129,14 @@ const run = async () => {
 
           await fs.writeFile(path.resolve(gitRoot, pkg), jsonString);
 
-          logger.log(chalk.green('Merged.'));
+          logger.info(chalk.green('Merged.'));
         } catch (error) {
           logger.debug(error);
-          logger.log(chalk.yellow('Skipped.'));
+          logger.warn('Skipped.');
         }
       }
 
-      logger.log('🤝 Thank you for using `reshala`. Have a nice day!');
+      logger.info('🤝 Thank you for using `reshala`. Have a nice day!');
     });
 
   program.parse(process.argv);

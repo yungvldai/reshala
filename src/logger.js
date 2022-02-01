@@ -1,15 +1,19 @@
 import chalk from 'chalk';
 
+const app = chalk.gray('[reshala]');
+
 const debug = (...args) => {
   if (!global.__isDebug) {
     return;
   }
 
-  console.log(`[${chalk.magenta('debug')}]:`, ...args);
+  console.log(app, `[${chalk.magenta('debug')}]:`, ...args);
 };
 
-const log = (...args) => console.log(...args);
+const info = (...args) => console.log(app, ...args);
 
-const err = (msg) => console.log(chalk.red(msg));
+const warn = (...args) => console.log(app, chalk.yellow('WARN!'), ...args);
 
-export default { debug, log, err };
+const err = (...args) => console.log(app, chalk.red('ERR!'), ...args);
+
+export default { debug, info, err, warn };
