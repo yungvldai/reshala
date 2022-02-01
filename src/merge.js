@@ -153,7 +153,7 @@ const merge = async (a, b, mergeOptions = {}, prefix = '') => {
 
     if (mergeOptions.preMerge) {
       try {
-        const preMergeResult = mergeOptions.preMerge(key, valueA, valueB);
+        const preMergeResult = await mergeOptions.preMerge(key, valueA, valueB);
 
         if (preMergeResult) {
           result = {

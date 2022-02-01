@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import path, { dirname } from 'path';
+import { createRequire } from 'module';
 import vm from 'vm';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
@@ -10,16 +11,15 @@ import { getOursVersion, getRoot, getTheirsVersion } from './git.js';
 import merge from './merge.js';
 import getPackages from './packages.js';
 import logger from './logger.js';
-import ab from './utils/prompt';
+import { ab } from './utils/prompt.js';
+
+const pwd = process.cwd();
 
 const driverContext = {
-  require,
   logger,
   chalk,
   ab
 };
-
-const pwd = process.cwd();
 
 const run = async () => {
   const __filename = fileURLToPath(import.meta.url);
@@ -54,7 +54,7 @@ const run = async () => {
   program
     .option('-i, --include-all', 'include all lines that are in ours/theirs but not in the other')
     .option('-e, --exclude-all', 'exclude all lines that are in ours/theirs but not in the other')
-    .option('-d, --driver', 'use custom driver to merge files')
+    .option('-d, --driver <path>', 'use custom driver to merge files')
     .option('-d, --debug', 'run in debug mode')
     .version(version, '-v, --version', 'print reshala version')
     .action(async (options) => {
@@ -68,8 +68,11 @@ const run = async () => {
 
       if (driver) {
         try {
-          const driverFullPath = path.resolve(pwd, driver);
-          preMerge = vm.runInNewContext(await fs.readFile(driverFullPath, 'utf-8'), driverContext);
+          const driverFullPath = path.isAbsolute(driver) ? driver : path.resolve(pwd, driver);
+          preMerge = vm.runInNewContext(await fs.readFile(driverFullPath, 'utf-8'), {
+            ...driverContext,
+            require: createRequire(`file://${driverFullPath}`)
+          });
         } catch (error) {
           logger.debug(error);
           logger.err('Cannot read or compile driver.');
