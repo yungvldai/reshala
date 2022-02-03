@@ -67,8 +67,8 @@ const checkExcluded = async (key, valueA, valueB, mergeOptions, prefix) => {
 };
 
 const resolveVersion = async (pkg, versionA, versionB, depType) => {
-  const parsedA = semver.parse(semver.prepare(versionA));
-  const parsedB = semver.parse(semver.prepare(versionB));
+  const parsedA = semver.parse(versionA);
+  const parsedB = semver.parse(versionB);
 
   if (parsedA && parsedB) {
     const newer = semver.newer(parsedA, parsedB);

@@ -1,4 +1,8 @@
+import { jest } from '@jest/globals';
+import inquirer from 'inquirer';
 import merge from '../src/merge.js';
+
+jest.mock('inquirer');
 
 describe('merge', () => {
   it('basic', async () => {
@@ -221,6 +225,29 @@ describe('merge', () => {
     const merged = await merge(packageA, packageB, { includeAll: true });
 
     expect(merged).toEqual(result);
-  })
+  });
 
+  it('unable to parse versions', async () => {
+    inquirer.prompt = jest.fn().mockResolvedValue({ answer: '1.0.0' });
+
+    const packageA = {
+      dependencies: {
+        react: '1.0.0',
+      }
+    };
+
+    const packageB = {
+      dependencies: {
+        react: '^1.0.0',
+      }
+    };
+
+    const merged = await merge(packageA, packageB, {});
+
+    expect(merged).toEqual({
+      dependencies: {
+        react: '1.0.0',
+      }
+    });
+  });
 });
