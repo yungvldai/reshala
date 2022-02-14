@@ -16,6 +16,7 @@ export const ab = async (params) => {
     if (!b) {
       const { answer } = await inquirer.prompt({
         name: 'answer',
+        prefix: `${logger.appName} ${chalk.green('?')}`,
         message,
         type: 'expand',
         default: 2,
@@ -30,6 +31,7 @@ export const ab = async (params) => {
 
     const { answer } = await inquirer.prompt({
       name: 'answer',
+      prefix: `${logger.appName} ${chalk.green('?')}`,
       message,
       type: 'expand',
       default: 2,

@@ -16,4 +16,4 @@ const warn = (...args) => console.log(app, chalk.yellow('WARN'), ...args);
 
 const err = (...args) => console.log(app, chalk.red('ERROR'), ...args);
 
-export default { debug, info, err, warn };
+export default { debug, info, err, warn, appName: app };
