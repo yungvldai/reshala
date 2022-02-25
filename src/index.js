@@ -11,6 +11,7 @@ import { getOursVersion, getRoot, getTheirsVersion } from './git.js';
 import merge from './merge.js';
 import getPackages from './packages.js';
 import logger from './logger.js';
+import exec from './utils/exec.js';
 import { ab } from './utils/prompt.js';
 
 const pwd = process.cwd();
@@ -18,6 +19,7 @@ const pwd = process.cwd();
 const driverContext = {
   logger,
   chalk,
+  $: exec,
   ab
 };
 

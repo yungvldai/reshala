@@ -86,15 +86,19 @@ For example, you can cut specified key from your resulting `package.json`:
 (key) => key === 'unnecessaryKey' ? {} : null;
 ```
 
-The last expression of the driver code must be functional. But you can use any JavaScript features in driver code.
-Furthermore, you have `logger`, `chalk`, `require` and `ab` functions in the global scope of driver file. 
+By the way, a key may be nested (e.g. `prop.nestedProp.key`).
 
-Probably, you are already familiar with the first three functions. But what about the forth?
+The last expression of the driver code must be functional. But you can use any JavaScript features in driver code.
+Furthermore, you have `logger`, `chalk`, `require`, `ab` and `$` functions in the global scope of driver file. 
+
+Probably, you are already familiar with the first three functions. But what about the forth and the fifth?
 
 ```ts
 type ABFunc = <A, B>(params: { a: A, b?: B, message: string }) => Promise<A | B | boolean>;
 ```
 
-`ab` is special `inquirer` wrapper. You can offer to choose between `a` and `b` (if passed both), or you can ask if key is needed to include (is passed `a` only). In the first option you will get `a` or `b` (depends on user's choice). In the second one you will get `true` or `false` (depends on user's choice too).
+`ab` is a special `inquirer` wrapper. You can offer to choose between `a` and `b` (if passed both), or you can ask if key is needed to include (is passed `a` only). In the first option you will get `a` or `b` (depends on user's choice). In the second one you will get `true` or `false` (depends on user's choice too).
+
+`$` is an async bash commands runner.
 
 Every question you see when work with `reshala` is just `ab` and you can use it in your own merge algorithms!
